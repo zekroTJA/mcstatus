@@ -3,19 +3,26 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>Minecraft Server Status</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='/static/css/tailwind.css'>
     <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
-<body>
-    <div>
-        {% for server in servers %}
-            <h2> {{server.name}} </h2>
-            <div hx-get="/server?host={{server.host}}{% match server.port %}{% when Some with (port) %}&port={{port}}{% when None %}{% endmatch %}" hx-swap="innerHTML" hx-trigger="load">
-                Loading ...
-            </div>
-        {% endfor %}
+<body class="bg-slate-900 text-white">
+    <div class="p-5">
+        <h1 class="font-light text-3xl mb-5">Servers</h1>
+        <div class="flex gap-5 flex-col md:flex-row flex-wrap">
+            {% for server in servers %}
+                <div class="flex flex-col gap-3 p-3 bg-slate-800 rounded-md">
+                    <h2 class="font-light text-2xl"> {{server.name}} </h2>
+                    <div hx-get="/server?host={{server.host}}{% match server.port %}{% when Some with (port) %}&port={{port}}{% when None %}{% endmatch %}" 
+                         hx-swap="outerHTML" 
+                         hx-trigger="load">
+                        Loading ...
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

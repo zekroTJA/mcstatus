@@ -1,18 +1,34 @@
-<div>
-    {% match version %}
-        {% when Some with (version) %}
-            <p>Version: {{version}}</p>
-        {% when None %}
-    {% endmatch %}
-    {% match players %}
-        {% when Some with (players) %}
-            <p>Players: {{players.0}} / {{players.1}}</p>
-        {% when None %}
-    {% endmatch %}
-    <strong>Players</strong>
-    <ul>
-        {% for player in player_list %}
-            <li>{{player}}</li>
-        {% endfor %}
-    </ul>
+<div class="flex gap-3">
+    <div class="rounded-sm overflow-hidden">
+        {% match favicon %}
+            {% when Some with (favicon) %}
+                <img src="{{favicon}}"/>
+            {% when None %}
+        {% endmatch %}
+    </div>
+
+    <div class="flex flex-col gap-1">
+        {% match version %}
+            {% when Some with (version) %}
+                <span class="opacity-75 text-sm">{{version}}</span>
+            {% when None %}
+        {% endmatch %}
+
+        {% match players %}
+            {% when Some with (players) %}
+                <div>
+                    {% if players.0 == 0 %}
+                        <strong>0 / {{players.1}} Players</strong>
+                    {% else %}
+                        <strong>{{players.0}} / {{players.1}} Players:</strong>
+                        <ul>
+                            {% for player in player_list %}
+                                <li>{{player}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% when None %}
+        {% endmatch %}
+    </div>
 </div>

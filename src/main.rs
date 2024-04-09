@@ -23,7 +23,9 @@ async fn index(State(config): State<Config>) -> Result<Index, ErrorResponse> {
 }
 
 async fn server(Query(params): Query<HashMap<String, String>>) -> Result<Server, ErrorResponse> {
-    let host = params.get("host").unwrap();
+    let host = params
+        .get("host")
+        .ok_or_else(|| anyhow::anyhow!("host must be specified"))?;
     let port = params.get("port").map(|p| p.parse()).transpose()?;
     let resp = ping(host, port).await?;
     Ok(resp.into())
