@@ -1,0 +1,8 @@
+[[servers]]
+name = "ATM9"
+address = "atm.zekro.de"
+
+[[servers]]
+name = "Vanilla"
+host = "ichigo.zekro.de"
+port = 24693

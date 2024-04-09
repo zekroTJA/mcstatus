@@ -9,6 +9,13 @@
     <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
 <body>
-    {% include "a.html" %}
+    <div>
+        {% for server in servers %}
+            <h2> {{server.name}} </h2>
+            <div hx-get="/server?host={{server.host}}{% match server.port %}{% when Some with (port) %}&port={{port}}{% when None %}{% endmatch %}" hx-swap="innerHTML" hx-trigger="load">
+                Loading ...
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

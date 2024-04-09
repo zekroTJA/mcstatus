@@ -1,11 +1,14 @@
+use std::time::Duration;
+
 use anyhow::Result;
-use craftping::Response;
-use tokio::net::TcpStream;
+use elytra_ping::{ping_or_timeout, JavaServerInfo};
 use trust_dns_resolver::{
     config::{ResolverConfig, ResolverOpts},
     error::{ResolveError, ResolveErrorKind},
     AsyncResolver,
 };
+
+pub type Response = JavaServerInfo;
 
 #[inline]
 fn is_not_found(err: &ResolveError) -> bool {
@@ -40,12 +43,15 @@ async fn resolve(addr: &str) -> Result<Option<(String, u16)>> {
     }
 }
 
-pub async fn ping(host: &str) -> Result<Response> {
-    let (host, port) = resolve(host)
-        .await?
-        .unwrap_or_else(|| (host.to_string(), 25565));
-    dbg!(&host, port);
-    let mut stream = TcpStream::connect((host.as_str(), port)).await?;
-    let pong = craftping::tokio::ping(&mut stream, &host, port).await?;
+pub async fn ping(host: &str, port: Option<u16>) -> Result<Response> {
+    let (host, port) = match port {
+        Some(port) => (host.to_string(), port),
+        None => resolve(host)
+            .await?
+            .unwrap_or_else(|| (host.to_string(), 25565)),
+    };
+
+    // TODO: Add some cahcing for host and port?
+    let (pong, _) = ping_or_timeout((host.to_string(), port), Duration::from_secs(1)).await?;
     Ok(pong)
 }

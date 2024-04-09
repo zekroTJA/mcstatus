@@ -1,0 +1,18 @@
+<div>
+    {% match version %}
+        {% when Some with (version) %}
+            <p>Version: {{version}}</p>
+        {% when None %}
+    {% endmatch %}
+    {% match players %}
+        {% when Some with (players) %}
+            <p>Players: {{players.0}} / {{players.1}}</p>
+        {% when None %}
+    {% endmatch %}
+    <strong>Players</strong>
+    <ul>
+        {% for player in player_list %}
+            <li>{{player}}</li>
+        {% endfor %}
+    </ul>
+</div>
