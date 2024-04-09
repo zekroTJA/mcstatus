@@ -4,7 +4,7 @@ RUN apk add nodejs npm musl-dev
 
 WORKDIR /build
 
-COPY css/ css/
+# COPY css/ css/
 COPY src/ src/
 COPY templates/ templates/
 COPY Cargo.toml .
