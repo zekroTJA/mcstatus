@@ -14,6 +14,7 @@ use axum::{
 use config::Config;
 use env_logger::Env;
 use errors::ErrorResponse;
+use log::info;
 use ping::ping;
 use templates::{Index, Server};
 use tower_http::services::ServeDir;
@@ -41,10 +42,13 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .route("/", get(index))
         .route("/server", get(server))
-        .with_state(cfg)
+        .with_state(cfg.clone())
         .nest_service("/static/css", ServeDir::new("css"));
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8080").await?;
+    let addr = cfg.address.unwrap_or("127.0.0.1:8080".into());
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
+
+    info!("Listening on {addr} ...");
     axum::serve(listener, app).await?;
 
     Ok(())

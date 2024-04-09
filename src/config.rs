@@ -1,6 +1,6 @@
 use anyhow::Result;
 use figment::{
-    providers::{Format, Json, Toml, Yaml},
+    providers::{Env, Format, Json, Toml, Yaml},
     Figment,
 };
 use serde::Deserialize;
@@ -24,6 +24,7 @@ pub enum ServerAddress {
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct Config {
+    pub address: Option<String>,
     pub servers: Vec<Server>,
 }
 
@@ -44,6 +45,8 @@ impl Config {
             "toml" => figment.merge(Toml::file(filename)),
             _ => anyhow::bail!("unsupported file format"),
         };
+
+        figment = figment.merge(Env::prefixed("MCSTATUS_"));
 
         Ok(figment.extract()?)
     }
