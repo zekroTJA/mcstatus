@@ -16,14 +16,14 @@ use env_logger::Env;
 use errors::ErrorResponse;
 use log::info;
 use ping::ping;
-use templates::{Index, Server};
+use templates::{Index, Server, ServerError};
 use tower_http::services::ServeDir;
 
 async fn index(State(config): State<Config>) -> Result<Index, ErrorResponse> {
     Ok(config.into())
 }
 
-async fn server(Query(params): Query<HashMap<String, String>>) -> Result<Server, ErrorResponse> {
+async fn server(Query(params): Query<HashMap<String, String>>) -> Result<Server, ServerError> {
     let host = params
         .get("host")
         .ok_or_else(|| anyhow::anyhow!("host must be specified"))?;

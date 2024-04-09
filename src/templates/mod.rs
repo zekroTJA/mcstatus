@@ -10,4 +10,5 @@ macro_rules! export {
 export! {
     index
     server
+    errors
 }
