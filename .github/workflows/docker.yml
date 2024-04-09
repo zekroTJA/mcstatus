@@ -9,6 +9,7 @@ on:
     paths:
       - "**.rs"
       - "Cargo.lock"
+      - "Dockerfile"
       - ".github/workflows/docker.yml"
   workflow_dispatch:
 

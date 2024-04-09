@@ -1,6 +1,7 @@
 FROM rust:alpine AS build
 
 RUN apk add nodejs npm musl-dev
+RUN rustup default nightly
 
 WORKDIR /build
 
@@ -13,6 +14,7 @@ COPY package.json .
 COPY package-lock.json .
 COPY tailwind.config.js .
 
+RUN npm install && npm run build
 RUN cargo build --release
 
 # ------------------------------------------------
