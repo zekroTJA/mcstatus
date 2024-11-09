@@ -1,25 +1,38 @@
+use core::fmt;
+
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
 
-pub struct ErrorResponse(anyhow::Error);
+pub struct ErrorResponse {
+    status: StatusCode,
+    message: String,
+}
+
+impl ErrorResponse {
+    pub fn new(status: StatusCode, message: impl Into<String>) -> Self {
+        Self {
+            status,
+            message: message.into(),
+        }
+    }
+}
 
 impl IntoResponse for ErrorResponse {
     fn into_response(self) -> Response {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("error: {}", self.0),
-        )
-            .into_response()
+        (self.status, self.message).into_response()
     }
 }
 
 impl<E> From<E> for ErrorResponse
 where
-    E: Into<anyhow::Error>,
+    E: fmt::Display,
 {
     fn from(err: E) -> Self {
-        Self(err.into())
+        Self {
+            status: StatusCode::INTERNAL_SERVER_ERROR,
+            message: err.to_string(),
+        }
     }
 }

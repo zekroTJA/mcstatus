@@ -23,8 +23,14 @@ pub enum ServerAddress {
 }
 
 #[derive(Deserialize, Clone, Debug)]
+pub struct Cors {
+    pub allowed_origins: Vec<String>,
+}
+
+#[derive(Deserialize, Clone, Debug)]
 pub struct Config {
     pub address: Option<String>,
+    pub cors: Option<Cors>,
     pub servers: Vec<Server>,
 }
 

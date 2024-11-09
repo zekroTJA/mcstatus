@@ -1,5 +1,3 @@
-#![feature(exit_status_error)]
-
 use npm_rs::*;
 
 fn main() {
