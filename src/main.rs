@@ -41,8 +41,17 @@ async fn server(
     let accept = headers.get("accept").map(|s| s.to_str()).transpose()?;
 
     Ok(match accept {
-        Some("application/json") => Json(resp).into_response(),
-        Some("text/html" | "*/*") | None => Server::from(resp).into_response(),
+        Some(v)
+            if v.split(',')
+                .map(str::trim)
+                .any(|v| v == "text/html" || v == "*/*") =>
+        {
+            Server::from(resp).into_response()
+        }
+        Some(v) if v.split(',').map(str::trim).any(|v| v == "application/json") => {
+            Json(resp).into_response()
+        }
+        None => Server::from(resp).into_response(),
         _ => ErrorResponse::new(
             StatusCode::BAD_REQUEST,
             "unsupported requested content type",
